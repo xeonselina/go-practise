@@ -2,11 +2,12 @@ package http
 
 import (
 	"context"
+	//"context"
 	"net/http"
 	"strconv"
 )
 
-func NewHttp(ctx context.Context, port int) *http.Server {
+func NewHttp(ctx context.Context,port int) *http.Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
 		request = request.WithContext(ctx)

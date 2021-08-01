@@ -14,8 +14,8 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	eg, ctx := errgroup.WithContext(ctx)
-	httpServ := http.NewHttp(ctx,80)
-	httpServDebug := http.NewHttp(ctx,8080)
+	httpServ := http.NewHttp(ctx,8080)
+	httpServDebug := http.NewHttp(ctx,8081)
 
 	eg.Go(func() error {
 		return httpServ.ListenAndServe()
@@ -29,10 +29,13 @@ func main() {
 		for {
 			select {
 			case <-ctx.Done():
+				log.Println("done received")
 				return ctx.Err()
-			case <-killSignal:
+			case <-killSignal: //不知道为什么 ctrl+c 无法退出
 				log.Println("kill signal shutdown")
 				cancel()
+				close(killSignal)
+				return nil
 			}
 		}
 	})
